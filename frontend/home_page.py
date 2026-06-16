@@ -7,25 +7,29 @@ def render_page():
     st.set_page_config(layout="wide", page_title="Real Master", initial_sidebar_state="expanded")
     set_global_styles()
 
+    components.history_side_bar()
+
+    with st.container(horizontal_alignment="center"):
+        st.image("frontend/assets/dnd_logo.png", width="content")
+
     _, main_container, _ = st.columns([1, 20, 1])
 
     with main_container:
-        with st.container(border=True):
-            _, header_col2, header_col3 = st.columns([1, 1, 1])
-            with header_col2:
-                st.image("frontend/assets/dnd_logo.png", width="content")
-            with header_col3:
-                st.button("Wyposaż w wiedzę", icon=":material/add:")
+        with st.container(key="main-container"):
+            st.markdown("<span class='main-container-marker'></span>", unsafe_allow_html=True)
 
-            components.history_side_bar()
+            _, _, header_col3 = st.columns([1, 1, 1])
+            with header_col3:
+                with st.container(horizontal_alignment="right"):
+                    st.button("Wyposaż w wiedzę", icon=":material/add:")
 
             st.image("frontend/assets/real_master.png")
 
             st.write("\n\n\n")
 
-            img_col1, img_col2, img_col3 = st.columns([1, 1, 1], vertical_alignment="center", border=True)
+            _, img_col2, _ = st.columns([1, 0.6, 1], vertical_alignment="center")
             with img_col2:
-                st.image("frontend/assets/dnd_dice.png", width="content")
+                st.image("frontend/assets/dnd_dice.png", width="stretch")
                 st.header("Ładowanie Many...")
 
             st.write("\n" * 5)
