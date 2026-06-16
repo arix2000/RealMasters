@@ -1,5 +1,6 @@
 import os
 
+from backend.document_processor import DocumentProcessor
 from backend.models import ChatResponse, AppMode, CharacterSheet
 
 
@@ -10,17 +11,13 @@ class RagFacade:
 
         master_index_path = os.path.join(vector_dir, "master.index")
         master_chunks_path = os.path.join(vector_dir, "master_chunks.json")
+
         # TODO: Inicjalizacja subkomponentów
-        pass
+        self.document_processor = DocumentProcessor()
 
     def ingest_context_file(self, file: bytes, filename: str, mode: AppMode) -> None:
-        """
-        Przetwarza plik i ładuje go do bazy wektorowej.
-        Rzuca bledy:
-            EmptyDocumentError: Gdy plik nie zawiera tekstu lub jest za krótki.
-            TextProcessingError: Gdy wystąpi błąd podczas procesowania tekstu
-        """
-        pass
+        chunks = self.document_processor.process_file(file, filename)
+
 
     def process_chat_query(self, query: str, mode: AppMode) -> ChatResponse:
         """
@@ -32,7 +29,7 @@ class RagFacade:
         """
         pass
 
-    def generate_entity(self, requirements: str, mode: AppMode) -> CharacterSheet:
+    def generate_entity(self, requirements: str, mode: AppMode, entity_to_modify: CharacterSheet = None) -> CharacterSheet:
         """
         Generuje ustrukturyzowany obiekt karty postaci.
         Rzuca:
