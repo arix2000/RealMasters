@@ -8,65 +8,53 @@ def set_global_styles():
     /* Buttons */
     div[data-testid="stButton"] button[kind="primary"] {
         border-color: #5F0271 !important;
-        background-color: transparent !important;
+        background-color: #1E1C1C !important;
     }
     div[data-testid="stButton"] button {
         border-color: #710246 !important;
-        border-radius: 16px !important;
+        border-radius: 24px !important;
+        background-color: #1E1C1C !important;
     }
-    
     
     /* Container */
     div.st-key-main-container {
         background-color: #202020 !important;
-        border: 2px solid #710246 !important;
         border-radius: 42px !important;
-        padding: 16px !important;
+        padding: 24px !important;
     }
     
-    div.st-key-main-container > div {
-        background-color: transparent !important;
+    div.st-key-main-container > div > div[data-testid="stVerticalBlock"] {
+        flex: 1 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        height: 100% !important;
     }
     
-    
-    
-    div[data-testid="stTextInput"] div[data-baseweb="base-input"] {
+    div.st-key-chat-container {
+        flex: 1 1 auto !important;        
+        min-height: 50vh !important;
+        margin-bottom: 16px !important; 
+        padding-right: 8px !important;  
+    }
+
+    /* Input Field */
+    div[data-testid="stTextArea"] div[data-baseweb="base-input"] {
         background-color: #1E1C1C !important;
         border: 1px solid #710246 !important;
-        border-radius: 16px !important;
+        border-radius: 24px !important;
         box-shadow: none !important;
+        height: 84px !important;
+        padding: 8px 4px !important;
         overflow: hidden !important;
     }
-    
-    div[data-testid="stTextInput"] input {
-        background-color: transparent !important;
-        color: #E2E2E2 !important; 
-        box-shadow: none !important;
-    }
 
-    div[data-testid="stSelectbox"] div[data-baseweb="select"] {
+    /* SelectBoxes */
+    div[data-testid="stSelectbox"] div[data-baseweb="select"] > div {
         background-color: #1E1C1C !important;
         border: 1px solid #710246 !important;
-        border-radius: 16px !important;
+        border-radius: 24px !important;
         box-shadow: none !important;
         overflow: hidden !important;
-
-    }
-
-    ul[data-baseweb="menu"] {
-        background-color: #1E1C1C !important;
-        border: 1px solid #710246 !important;
-        border-radius: 16px !important;
-        overflow: hidden;
-    }
-
-    ul[data-baseweb="menu"] li {
-        color: #E2E2E2 !important;
-    }
-    
-    div[data-testid="stTextInput"] div[data-baseweb="base-input"]:hover,
-    div[data-testid="stSelectbox"] div[data-baseweb="select"]:hover {
-        border-color: #5F0271 !important;
     }
     
     </style>

@@ -39,3 +39,21 @@ def history_side_bar():
             icon=icon_type,
             type=btn_type
         )
+
+
+def input_fields():
+    st.text_area("", placeholder="Zapytaj o coś ...", label_visibility="collapsed")
+
+    select_col1, select_col2, _ = st.columns([1, 1, 5])
+    with select_col1:
+        st.selectbox(
+            "Rola",
+            ["Jako gracz", "Jako mistrz gry"],
+            label_visibility="collapsed"
+        )
+    with select_col2:
+        st.selectbox(
+            "Akcja",
+            ["Tworzę postać", "Chce się dowiedzieć"],
+            label_visibility="collapsed"
+        )
