@@ -3,7 +3,7 @@ from typing import Literal
 import streamlit as st
 
 from backend.models import AppMode
-from frontend.data.history_entry import HistoryItem
+from frontend.data.frontend_models import HistoryItem
 
 
 def history_side_bar():
