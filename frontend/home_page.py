@@ -29,17 +29,21 @@ def render_page():
             st.image("frontend/assets/real_master.png")
             render_main_container()
 
+    components.floating_add_button()
+
 
 def render_main_container():
     chat_container, dice_placeholder = components.render_chat_container()
 
     query = components.input_field()
 
+    is_chat_active = len(st.session_state.messages) > 0
+
     select_col1, select_col2, _ = st.columns([1, 1, 5])
     with select_col1:
-        selected_mode = components.selectable_player_box()
+        selected_mode = components.selectable_player_box(disabled=is_chat_active)
     with select_col2:
-        selected_action = components.selectable_type_box()
+        selected_action = components.selectable_type_box(disabled=is_chat_active)
 
     if query:
         if len(st.session_state.messages) == 0:
