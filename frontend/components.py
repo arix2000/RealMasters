@@ -3,7 +3,7 @@ from typing import Literal
 import streamlit as st
 
 from backend.models import AppMode
-from frontend.data.history_entry import HistoryItem
+from frontend.data.frontend_models import HistoryItem
 
 
 def history_side_bar():
@@ -46,20 +46,22 @@ def input_field():
     return st.chat_input(key="input-field", placeholder="Zapytaj o coś ...")
 
 
-def selectable_player_box() -> AppMode:
+def selectable_player_box(disabled: bool = False) -> str:
     choice = st.selectbox(
         "Rola",
         ["Jako gracz", "Jako mistrz gry"],
-        label_visibility="collapsed"
+        label_visibility="collapsed",
+        disabled=disabled
     )
     return "player" if choice == "Jako gracz" else "master"
 
 
-def selectable_type_box() -> str:
+def selectable_type_box(disabled: bool = False) -> str:
     return st.selectbox(
         "Akcja",
         ["Tworzę postać", "Chce się dowiedzieć"],
-        label_visibility="collapsed"
+        label_visibility="collapsed",
+        disabled=disabled
     )
 
 
@@ -80,3 +82,9 @@ def render_chat_container():
                     st.markdown(message["content"])
 
     return chat_container, dice_placeholder
+
+
+def floating_add_button():
+    if st.button("Nowy chat", icon=":material/add:", key="new_chat_fab"):
+        st.session_state.messages = []
+        st.rerun()

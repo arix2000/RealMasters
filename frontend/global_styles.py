@@ -83,5 +83,30 @@ def set_global_styles():
         overflow: hidden !important;
     }
     
+    /* Floating button */
+    div.st-key-new_chat_fab {
+        position: fixed !important;
+        bottom: 40px !important;
+        right: 40px !important;
+        z-index: 99999 !important;
+    }
+
+    div.st-key-new_chat_fab button {
+        background-color: #710246 !important;
+        color: #E2E2E2 !important;
+        border: none !important;
+        border-radius: 50px !important;
+        padding: 12px 24px !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+        font-weight: bold !important;
+        transition: all 0.2s ease-in-out !important;
+    }
+
+    div.st-key-new_chat_fab button:hover {
+        background-color: #92035A !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6) !important;
+    }
+    
     </style>
     """, unsafe_allow_html=True)
