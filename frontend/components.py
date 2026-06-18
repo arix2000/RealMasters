@@ -3,7 +3,7 @@ from typing import Literal
 import streamlit as st
 
 from backend.models import AppMode
-from frontend.data.frontend_models import HistoryItem
+from frontend.data.frontend_models import HistoryItem, OutputType
 
 
 def history_side_bar():
@@ -46,7 +46,7 @@ def input_field():
     return st.chat_input(key="input-field", placeholder="Zapytaj o coś ...")
 
 
-def selectable_player_box(disabled: bool = False) -> str:
+def selectable_player_box(disabled: bool = False) -> AppMode:
     choice = st.selectbox(
         "Rola",
         ["Jako gracz", "Jako mistrz gry"],
@@ -56,13 +56,14 @@ def selectable_player_box(disabled: bool = False) -> str:
     return "player" if choice == "Jako gracz" else "master"
 
 
-def selectable_type_box(disabled: bool = False) -> str:
-    return st.selectbox(
+def selectable_type_box(disabled: bool = False) -> OutputType:
+    choice = st.selectbox(
         "Akcja",
-        ["Tworzę postać", "Chce się dowiedzieć"],
+        ["Chce się dowiedzieć", "Tworzę postać"],
         label_visibility="collapsed",
         disabled=disabled
     )
+    return 'asking_question' if choice == "Chce się dowiedzieć" else 'character_creation'
 
 
 def render_chat_container():
@@ -79,7 +80,7 @@ def render_chat_container():
         else:
             for message in st.session_state.messages:
                 with st.chat_message(message["role"]):
-                    st.markdown(message["content"])
+                    st.markdown(message["content"], unsafe_allow_html=True)
 
     return chat_container, dice_placeholder
 
@@ -87,4 +88,5 @@ def render_chat_container():
 def floating_add_button():
     if st.button("Nowy chat", icon=":material/add:", key="new_chat_fab"):
         st.session_state.messages = []
+        st.session_state.last_character = None
         st.rerun()

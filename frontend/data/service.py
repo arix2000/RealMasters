@@ -21,10 +21,10 @@ def load_file(file: bytes, filename: str, mode: AppMode) -> None:
     facade.ingest_context_file(file=file, filename=filename, mode=mode)
 
 
-def create_character(prompt: str, mode: AppMode, entity_to_modify: CharacterSheet = None) -> CharacterSheet:
+def create_character(prompt: str, mode: AppMode, last_character_response: CharacterSheet = None) -> CharacterSheet:
     facade = get_rag_facade()
     return facade.generate_entity(
         requirements=prompt,
         mode=mode,
-        entity_to_modify=entity_to_modify
+        entity_to_modify=last_character_response
     )

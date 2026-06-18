@@ -1,7 +1,8 @@
 import streamlit as st
 from frontend.global_styles import set_global_styles
 import frontend.components as components
-from frontend.data.service import submit_chat_prompt
+import frontend.character_card_component as character_card
+from frontend.data.service import submit_chat_prompt, create_character
 
 
 def render_page():
@@ -10,6 +11,9 @@ def render_page():
 
     if "messages" not in st.session_state:
         st.session_state.messages = []
+
+    if "last_character" not in st.session_state:
+        st.session_state.last_character = None
 
     components.history_side_bar()
 
@@ -57,9 +61,20 @@ def render_main_container():
 
             with st.chat_message("assistant"):
                 with st.spinner("Ładuje mane..."):
-                    response = submit_chat_prompt(prompt=query, mode=selected_mode)
-                    st.markdown(response.answer)
+                    if selected_action == 'asking_question':
+                        response = submit_chat_prompt(prompt=query, mode=selected_mode)
+                        answer_content = response.answer
+                    else:
+                        response = create_character(
+                            prompt=query,
+                            mode=selected_mode,
+                            last_character_response=st.session_state.last_character
+                        )
+                        st.session_state.last_character = response
+                        answer_content = character_card.render(response)
 
-        st.session_state.messages.append({"role": "assistant", "content": response.answer})
+                    st.markdown(answer_content, unsafe_allow_html=True)
+
+        st.session_state.messages.append({"role": "assistant", "content": answer_content})
 
         st.rerun()
