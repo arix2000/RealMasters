@@ -3,6 +3,10 @@ from typing import List, Dict, Optional
 from langchain_core.documents import Document
 from langchain_community.vectorstores import FAISS
 from langchain_huggingface import HuggingFaceEmbeddings
+import faiss
+import json
+import uuid
+from langchain_community.docstore.in_memory import InMemoryDocstore
 
 from backend.models import AppMode
 from backend.exceptions import (
@@ -30,14 +34,31 @@ class VectorStoreManager:
             raise VectorStoreLoadError(mode=mode, file_path=index_path)
 
         try:
-            folder_path = os.path.dirname(index_path)
-            index_name = os.path.splitext(os.path.basename(index_path))[0]
 
-            store = FAISS.load_local(
-                folder_path=folder_path,
-                embeddings=self.embedder,
-                index_name=index_name,
-                allow_dangerous_deserialization=True
+            index = faiss.read_index(index_path)
+
+            with open(chunks_path, 'r', encoding='utf-8') as f:
+                chunks = json.load(f)
+
+            documents = []
+            for chunk in chunks:
+                if isinstance(chunk, str):
+                    documents.append(Document(page_content=chunk, metadata={"source": f"{mode}_context"}))
+                elif isinstance(chunk, dict) and "page_content" in chunk:
+                    documents.append(Document(**chunk))
+                else:
+                    documents.append(Document(page_content=str(chunk), metadata={"source": f"{mode}_context"}))
+
+            index_to_docstore_id = {i: str(uuid.uuid4()) for i in range(len(documents))}
+            docstore = InMemoryDocstore({
+                id_: doc for id_, doc in zip(index_to_docstore_id.values(), documents)
+            })
+
+            store = FAISS(
+                embedding_function=self.embedder,
+                index=index,
+                docstore=docstore,
+                index_to_docstore_id=index_to_docstore_id
             )
             self.stores[mode] = store
 
