@@ -1,6 +1,5 @@
 import logging
 
-# Inicjalizacja loggera dla modułu logiki biznesowej
 logger = logging.getLogger("LoreMaster.Backend")
 
 
@@ -77,4 +76,38 @@ class StructuredParsingError(LoreMasterBaseError):
             dev_message="LLM zwrócił format, którego Pydantic nie potrafi zmapować na schemat.",
             target_model=target_model,
             raw_output=raw_output
+        )
+
+class EmbeddingModelError(LoreMasterBaseError):
+    def __init__(self, model_name: str, error_details: str):
+        self.model_name = model_name
+        self.error_details = error_details
+        super().__init__(
+            dev_message="Nie udało się załadować lokalnego modelu wektoryzującego (HuggingFace) do pamięci.",
+            model_name=model_name,
+            error_details=error_details
+        )
+
+
+class VectorStoreLoadError(LoreMasterBaseError):
+    def __init__(self, mode: str, file_path: str):
+        self.mode = mode
+        self.file_path = file_path
+        super().__init__(
+            dev_message="Nie udało się załadować bazy FAISS z dysku. Plik nie istnieje, brak uprawnień lub format jest uszkodzony.",
+            mode=mode,
+            file_path=file_path
+        )
+
+
+class VectorStoreOperationError(LoreMasterBaseError):
+    def __init__(self, operation: str, mode: str, details: str):
+        self.operation = operation
+        self.mode = mode
+        self.details = details
+        super().__init__(
+            dev_message="Krytyczny błąd podczas operacji na wektorach w pamięci RAM.",
+            operation=operation,
+            mode=mode,
+            details=details
         )

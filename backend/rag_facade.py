@@ -2,6 +2,7 @@ import os
 
 from backend.document_processor import DocumentProcessor
 from backend.models import ChatResponse, AppMode, CharacterSheet
+from backend.vector_manager import VectorStoreManager
 
 
 class RagFacade:
@@ -12,8 +13,12 @@ class RagFacade:
         master_index_path = os.path.join(vector_dir, "master.index")
         master_chunks_path = os.path.join(vector_dir, "master_chunks.json")
 
-        # TODO: Inicjalizacja subkomponentów
         self.document_processor = DocumentProcessor()
+
+        self.vector_manager = VectorStoreManager()
+
+        self.vector_manager.load_store('player', player_index_path, player_chunks_path)
+        self.vector_manager.load_store('master', master_index_path, master_chunks_path)
 
     def ingest_context_file(self, file: bytes, filename: str, mode: AppMode) -> None:
         chunks = self.document_processor.process_file(file, filename)
@@ -31,7 +36,7 @@ class RagFacade:
 
     def generate_entity(self, requirements: str, mode: AppMode, entity_to_modify: CharacterSheet = None) -> CharacterSheet:
         """
-        Generuje ustrukturyzowany obiekt karty postaci.
+        Generuje ustrukturyzowany obiekt karty postaci lub jeśli entity_to_modify != None, modyfikuję przekazaną postać
         Rzuca:
             GuardrailViolationError: Gdy użytkownik poprosi o wygenerowanie czegoś niezgodnego z tematyką
             StructuredParsingError: Gdy LLM zacznie halucynowac i zwroci niepoprawnego JSON-a
