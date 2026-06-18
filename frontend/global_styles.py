@@ -38,14 +38,40 @@ def set_global_styles():
     }
 
     /* Input Field */
-    div[data-testid="stTextArea"] div[data-baseweb="base-input"] {
+    div.st-key-input-field [data-testid="stChatInput"] * {
+        background: transparent !important;
+        background-color: transparent !important;
+        border: none !important
+    }
+
+    div.st-key-input-field [data-testid="stChatInput"] {
+        background: #1E1C1C !important;
         background-color: #1E1C1C !important;
         border: 1px solid #710246 !important;
         border-radius: 24px !important;
-        box-shadow: none !important;
-        height: 84px !important;
-        padding: 8px 4px !important;
-        overflow: hidden !important;
+        padding: 4px 16px !important; 
+    }
+
+    div.st-key-input-field [data-testid="stChatInput"]:focus-within {
+        border-color: #92035A !important;
+    }
+
+    div.st-key-input-field [data-testid="stChatInput"] textarea {
+        color: #E2E2E2 !important;
+    }
+
+    div.st-key-input-field [data-testid="stChatInput"] button {
+        color: #710246 !important;
+    }
+    
+    div.st-key-input-field [data-testid="stChatInput"] button svg {
+        fill: #710246 !important;
+    }
+
+    div.st-key-input-field [data-testid="stChatInput"] button:hover {
+        background: #2C2A2A !important;
+        background-color: #2C2A2A !important;
+        border-radius: 50% !important;
     }
 
     /* SelectBoxes */

@@ -2,7 +2,8 @@ from typing import Literal
 
 import streamlit as st
 
-from frontend.history_entry import HistoryItem
+from backend.models import AppMode
+from frontend.data.history_entry import HistoryItem
 
 
 def history_side_bar():
@@ -41,19 +42,41 @@ def history_side_bar():
         )
 
 
-def input_fields():
-    st.text_area("", placeholder="Zapytaj o coś ...", label_visibility="collapsed")
+def input_field():
+    return st.chat_input(key="input-field", placeholder="Zapytaj o coś ...")
 
-    select_col1, select_col2, _ = st.columns([1, 1, 5])
-    with select_col1:
-        st.selectbox(
-            "Rola",
-            ["Jako gracz", "Jako mistrz gry"],
-            label_visibility="collapsed"
-        )
-    with select_col2:
-        st.selectbox(
-            "Akcja",
-            ["Tworzę postać", "Chce się dowiedzieć"],
-            label_visibility="collapsed"
-        )
+
+def selectable_player_box() -> AppMode:
+    choice = st.selectbox(
+        "Rola",
+        ["Jako gracz", "Jako mistrz gry"],
+        label_visibility="collapsed"
+    )
+    return "player" if choice == "Jako gracz" else "master"
+
+
+def selectable_type_box() -> str:
+    return st.selectbox(
+        "Akcja",
+        ["Tworzę postać", "Chce się dowiedzieć"],
+        label_visibility="collapsed"
+    )
+
+
+def render_chat_container():
+    chat_container = st.container(key="chat-container")
+    dice_placeholder = st.empty()
+
+    with chat_container:
+        if len(st.session_state.messages) == 0:
+            with dice_placeholder.container():
+                _, img_col2, _ = st.columns([1, 0.6, 1])
+                with img_col2:
+                    st.image("frontend/assets/dnd_dice.png", use_container_width=True)
+                    st.header("Zanuć pytanie...", text_alignment="center")
+        else:
+            for message in st.session_state.messages:
+                with st.chat_message(message["role"]):
+                    st.markdown(message["content"])
+
+    return chat_container, dice_placeholder
