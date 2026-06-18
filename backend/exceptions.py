@@ -111,3 +111,13 @@ class VectorStoreOperationError(LoreMasterBaseError):
             mode=mode,
             details=details
         )
+
+class PromptFormattingError(LoreMasterBaseError):
+    def __init__(self, template_name: str, missing_variable: str):
+        self.template_name = template_name
+        self.missing_variable = missing_variable
+        super().__init__(
+            dev_message="Błąd podczas formatowania szablonu LangChain. Brakuje wymaganej zmiennej.",
+            template_name=template_name,
+            missing_variable=missing_variable
+        )
