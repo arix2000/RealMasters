@@ -6,5 +6,7 @@ langchain-google-genai
 langchain-huggingface
 faiss-cpu
 sentence-transformers
-pytest
 pytest-mock
+pypdf
+python-docx
+langchain-community
