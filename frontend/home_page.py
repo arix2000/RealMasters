@@ -1,13 +1,17 @@
+import uuid
 import streamlit as st
 from frontend.global_styles import set_global_styles
 import frontend.components as components
 import frontend.character_card_component as character_card
-from frontend.data.service import submit_chat_prompt, create_character
+from frontend.data.service import get_app_service
 
 
 def render_page():
     st.set_page_config(layout="wide", page_title="Real Master", initial_sidebar_state="expanded")
     set_global_styles()
+
+    if "session_id" not in st.session_state:
+        st.session_state.session_id = str(uuid.uuid4())
 
     if "messages" not in st.session_state:
         st.session_state.messages = []
@@ -38,9 +42,9 @@ def render_page():
 
 def render_main_container():
     chat_container, dice_placeholder = components.render_chat_container()
+    service = get_app_service()
 
     query = components.input_field()
-
     is_chat_active = len(st.session_state.messages) > 0
 
     select_col1, select_col2, _ = st.columns([1, 1, 5])
@@ -62,10 +66,10 @@ def render_main_container():
             with st.chat_message("assistant"):
                 with st.spinner("Ładuje mane..."):
                     if selected_action == 'asking_question':
-                        response = submit_chat_prompt(prompt=query, mode=selected_mode)
+                        response = service.submit_chat_prompt(prompt=query, mode=selected_mode)
                         answer_content = response.answer
                     else:
-                        response = create_character(
+                        response = service.create_character(
                             prompt=query,
                             mode=selected_mode,
                             last_character_response=st.session_state.last_character
@@ -76,5 +80,18 @@ def render_main_container():
                     st.markdown(answer_content, unsafe_allow_html=True)
 
         st.session_state.messages.append({"role": "assistant", "content": answer_content})
+
+        title = st.session_state.messages[0]["content"][:30]
+        is_character = selected_action == 'character_creation'
+
+        service.save_chat_session(
+            session_id=st.session_state.session_id,
+            title=title,
+            is_character=is_character,
+            messages=st.session_state.messages,
+            last_character=st.session_state.last_character,
+            mode=selected_mode,
+            action=selected_action
+        )
 
         st.rerun()
