@@ -1,9 +1,11 @@
+import random
 import uuid
 import streamlit as st
 from frontend.global_styles import set_global_styles
 import frontend.components as components
 import frontend.character_card_component as character_card
 from frontend.data.service import get_app_service
+from frontend.ui_utils import loading_messages
 
 
 def render_page():
@@ -59,12 +61,14 @@ def render_main_container():
 
         st.session_state.messages.append({"role": "user", "content": query})
 
+        selected_message = random.choice(loading_messages)
+
         with chat_container:
             with st.chat_message("user"):
                 st.markdown(query)
 
             with st.chat_message("assistant"):
-                with st.spinner("Ładuje mane..."):
+                with st.spinner(selected_message):
                     if selected_action == 'asking_question':
                         response = service.submit_chat_prompt(prompt=query, mode=selected_mode)
                         answer_content = response.answer
