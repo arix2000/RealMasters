@@ -34,7 +34,6 @@ class VectorStoreManager:
             raise VectorStoreLoadError(mode=mode, file_path=index_path)
 
         try:
-
             index = faiss.read_index(index_path)
 
             with open(chunks_path, 'r', encoding='utf-8') as f:
@@ -67,7 +66,6 @@ class VectorStoreManager:
 
     def add_custom_context(self, chunks: List[Document], mode: AppMode) -> None:
         store = self.stores.get(mode)
-
         if not store:
             raise VectorStoreOperationError(
                 operation="ADD",
@@ -75,22 +73,34 @@ class VectorStoreManager:
                 details="Próba zapisu do niezainicjalizowanej bazy."
             )
 
-        batch_size = 20
-
         try:
-            print("LICZBA CHUNKÓW:", len(chunks))
-            print("TRYB:", mode)
-
-            for i in range(0, len(chunks), batch_size):
-                batch = chunks[i:i + batch_size]
-                store.add_documents(batch)
-
+            store.add_documents(chunks)
         except Exception as e:
-            import traceback
-            print("ADD_DOCUMENTS ERROR:", repr(e))
-            print(traceback.format_exc())
             raise VectorStoreOperationError(
                 operation="ADD",
                 mode=mode,
-                details=f"{type(e).__name__}: {e}"
+                details=str(e)
             )
+
+    def search_similar(self, query: str, mode: AppMode, k: int = 3) -> List[Document]:
+        store = self.stores.get(mode)
+        if not store:
+            raise VectorStoreOperationError(
+                operation="SEARCH",
+                mode=mode,
+                details="Próba wyszukiwania w niezainicjalizowanej bazie."
+            )
+
+        try:
+            results = store.similarity_search(query, k=k)
+        except Exception as e:
+            raise VectorStoreOperationError(
+                operation="SEARCH",
+                mode=mode,
+                details=str(e)
+            )
+
+        if not results:
+            raise MissingContextError(mode=mode, query=query)
+
+        return results

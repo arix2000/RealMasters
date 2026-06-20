@@ -26,7 +26,6 @@ def history_side_bar():
             display_text = item.entryText
 
         btn_type: Literal["primary", "secondary", "tertiary"] = "primary" if item.is_character else "secondary"
-
         icon_type = ":material/article_person:" if item.is_character else ":material/history:"
 
         st.sidebar.button(
@@ -34,6 +33,7 @@ def history_side_bar():
             width="stretch",
             icon=icon_type,
             type=btn_type,
+            key=f"history_{item.session_id}",
             on_click=load_selected_chat,
             args=(item.session_id,)
         )
