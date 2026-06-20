@@ -72,7 +72,11 @@ def render_main_container():
             with st.chat_message("assistant"):
                 with st.spinner(selected_message):
                     if selected_action == 'asking_question':
-                        response = service.submit_chat_prompt(prompt=query, mode=selected_mode)
+                        response = service.submit_chat_prompt(
+                            prompt=query,
+                            mode=selected_mode,
+                            chat_history=st.session_state.messages[:-1]
+                        )
                         answer_content = response.answer
                     else:
                         response = service.create_character(

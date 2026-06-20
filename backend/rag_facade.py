@@ -29,17 +29,24 @@ class RagFacade:
         self.vector_manager.add_custom_context(chunks, mode)
 
 
-    def process_chat_query(self, query: str, mode: AppMode) -> ChatResponse:
+    def process_chat_query(self, query: str, mode: AppMode, chat_history: list = None) -> ChatResponse:
         self.prompt_manager.check_guardrails(query)
 
         retrieved_docs = self.vector_manager.search_similar(query, mode, k=3)
 
         context_text = "\n\n---\n\n".join([doc.page_content for doc in retrieved_docs])
 
+        history_text = ""
+        if chat_history:
+            for msg in chat_history:
+                role = "User" if msg["role"] == "user" else "Assistant"
+                history_text += f"{role}: {msg['content']}\n"
+
         final_prompt = self.prompt_manager.build_chat_prompt(
             query=query,
             context=context_text,
-            mode=mode
+            mode=mode,
+            chat_history=history_text
         )
 
         answer_text = self.llm_client.generate_chat_response(final_prompt)
