@@ -67,33 +67,30 @@ class VectorStoreManager:
 
     def add_custom_context(self, chunks: List[Document], mode: AppMode) -> None:
         store = self.stores.get(mode)
+
         if not store:
             raise VectorStoreOperationError(
-                operation="ADD", mode=mode, details="Próba zapisu do niezainicjalizowanej bazy."
+                operation="ADD",
+                mode=mode,
+                details="Próba zapisu do niezainicjalizowanej bazy."
             )
+
+        batch_size = 20
 
         try:
-            store.add_documents(chunks)
+            print("LICZBA CHUNKÓW:", len(chunks))
+            print("TRYB:", mode)
+
+            for i in range(0, len(chunks), batch_size):
+                batch = chunks[i:i + batch_size]
+                store.add_documents(batch)
+
         except Exception as e:
+            import traceback
+            print("ADD_DOCUMENTS ERROR:", repr(e))
+            print(traceback.format_exc())
             raise VectorStoreOperationError(
-                operation="ADD", mode=mode, details=str(e)
+                operation="ADD",
+                mode=mode,
+                details=f"{type(e).__name__}: {e}"
             )
-
-    def search_similar(self, query: str, mode: AppMode, k: int = 3) -> List[Document]:
-        store = self.stores.get(mode)
-        if not store:
-            raise VectorStoreOperationError(
-                operation="SEARCH", mode=mode, details="Próba wyszukiwania w niezainicjalizowanej bazie."
-            )
-
-        try:
-            results = store.similarity_search(query, k=k)
-        except Exception as e:
-            raise VectorStoreOperationError(
-                operation="SEARCH", mode=mode, details=str(e)
-            )
-
-        if not results:
-            raise MissingContextError(mode=mode, query=query)
-
-        return results

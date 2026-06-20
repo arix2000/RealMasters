@@ -73,10 +73,6 @@ class DocumentProcessor:
             )
 
         text = " ".join(text.split())
-
-        if not text.strip():
-            raise EmptyDocumentError(filename=filename, file_size=len(text))
-
         return text
 
     @staticmethod
