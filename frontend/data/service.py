@@ -16,8 +16,8 @@ class AppService:
         if not os.path.exists(self.history_dir):
             os.makedirs(self.history_dir)
 
-    def submit_chat_prompt(self, prompt: str, mode: AppMode) -> ChatResponse:
-        return self.facade.process_chat_query(query=prompt, mode=mode)
+    def submit_chat_prompt(self, prompt: str, mode: AppMode, chat_history: list = None) -> ChatResponse:
+        return self.facade.process_chat_query(query=prompt, mode=mode, chat_history=chat_history)
 
     def load_file(self, file: bytes, filename: str, mode: AppMode) -> None:
         self.facade.ingest_context_file(file=file, filename=filename, mode=mode)
